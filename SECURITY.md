@@ -30,6 +30,11 @@ Gladys before reporting a problem.
 
 In scope: the code of this repository and the Docker image it publishes.
 
+The integration reads public IESO reports over HTTPS, without account, key or
+secret. It stores one small file under `/data`: the state of the scene
+triggers (which threshold is crossed), nothing personal. It opens no port and
+needs no access to the local network.
+
 Out of scope: Gladys Assistant itself (see its
 [security policy](https://github.com/GladysAssistant/Gladys/security/policy)),
-and the third-party services and devices the integration talks to.
+and the IESO reports the integration reads.

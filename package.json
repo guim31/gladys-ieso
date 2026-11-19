@@ -1,8 +1,8 @@
 {
-  "name": "gladys-integration-template-js",
+  "name": "gladys-ieso",
   "version": "1.0.0",
   "private": true,
-  "description": "Official starter template to build an external integration for Gladys Assistant with the JavaScript SDK.",
+  "description": "Ontario power grid (IESO) for Gladys Assistant: real-time price, demand and generation mix.",
   "type": "module",
   "main": "index.js",
   "scripts": {

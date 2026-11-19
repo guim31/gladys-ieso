@@ -1,177 +1,361 @@
 {
   "manifest_version": 1,
   "type": "device",
-  "name": "Demo Devices Template",
+  "name": "IESO Ontario Grid",
   "description": {
-    "en": "Starter template showing sensors, a switch, a dimmable light and a smart plug.",
-    "fr": "Template de démarrage : capteurs, interrupteur, lampe variable et prise connectée."
+    "en": "Ontario power grid live from the IESO: price, demand, generation mix and low-carbon share.",
+    "fr": "Réseau électrique de l'Ontario en direct par l'IESO : prix, demande, mix et part bas carbone.",
+    "de": "Stromnetz Ontario live von der IESO: Preis, Verbrauch, Strommix und CO₂-armer Anteil.",
+    "es": "Red eléctrica de Ontario en directo del IESO: precio, demanda, mix y proporción baja en carbono."
   },
   "version": "1.0.0",
-  "docker_image": "ghcr.io/gladysassistant/integration-template-js:1.0.0",
-  "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/integration-template-js/master/cover.png",
-  "categories": ["lighting", "security", "environment"],
-  "transports": ["local", "cloud"],
+  "docker_image": "ghcr.io/guim31/gladys-ieso:1.0.0",
+  "gladys_version": ">=5.3.0",
+  "cover_image": "https://raw.githubusercontent.com/guim31/gladys-ieso/main/cover.png",
+  "categories": ["energy"],
+  "countries": ["CA"],
+  "transports": ["cloud"],
   "config_schema": [
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Getting started", "fr": "Pour commencer" },
+      "label": {
+        "en": "Open data from the IESO",
+        "fr": "Les données ouvertes de l'IESO",
+        "de": "Offene Daten der IESO",
+        "es": "Datos abiertos del IESO"
+      },
       "description": {
-        "en": "The demo weather station reads real data from the free Open-Meteo API: pick the coordinates to observe. No account, no API key.",
-        "fr": "La station météo de démonstration lit de vraies données via l'API gratuite Open-Meteo : choisissez les coordonnées à observer. Pas de compte, pas de clé d'API."
+        "en": "Public reports of the Ontario grid operator, no account needed. Prices are wholesale, not your electricity rate. Not affiliated with the IESO.",
+        "fr": "Rapports publics de l'opérateur du réseau de l'Ontario, sans compte. Les prix sont des prix de gros, pas votre tarif. Sans lien avec l'IESO.",
+        "de": "Öffentliche Berichte des Netzbetreibers von Ontario, ohne Konto. Die Preise sind Großhandelspreise, nicht dein Stromtarif. Nicht mit der IESO verbunden.",
+        "es": "Informes públicos del operador de la red de Ontario, sin cuenta. Los precios son mayoristas, no su tarifa. Sin relación con el IESO."
       },
       "links": [
         {
-          "url": "https://open-meteo.com/en/docs",
-          "label": { "en": "Open-Meteo documentation", "fr": "Documentation Open-Meteo" }
+          "url": "https://www.ieso.ca/power-data",
+          "label": {
+            "en": "IESO power data",
+            "fr": "Données électriques de l'IESO",
+            "de": "Stromdaten der IESO",
+            "es": "Datos eléctricos del IESO"
+          }
         }
       ]
     },
     {
-      "key": "latitude",
+      "key": "price_high",
       "type": "number",
-      "label": { "en": "Latitude", "fr": "Latitude" },
-      "description": {
-        "en": "Latitude used for the demo weather sensor.",
-        "fr": "Latitude utilisée par le capteur météo de démonstration."
+      "label": {
+        "en": "High price threshold ($/MWh)",
+        "fr": "Seuil de prix haut ($/MWh)",
+        "de": "Hohe Preisschwelle ($/MWh)",
+        "es": "Umbral de precio alto ($/MWh)"
       },
-      "placeholder": { "en": "e.g. 48.8566", "fr": "ex. 48.8566" },
-      "required": true,
-      "default": 48.8566,
-      "min": -90,
-      "max": 90
+      "description": {
+        "en": "For the \"Price above\" trigger. Empty: off.",
+        "fr": "Pour le déclencheur « Prix au-dessus ». Vide : désactivé.",
+        "de": "Für den Auslöser „Preis über“. Leer: aus.",
+        "es": "Para el disparador «Precio por encima». Vacío: desactivado."
+      },
+      "required": false,
+      "min": -2000,
+      "max": 2000
     },
     {
-      "key": "longitude",
+      "key": "price_low",
       "type": "number",
-      "label": { "en": "Longitude", "fr": "Longitude" },
-      "description": {
-        "en": "Longitude used for the demo weather sensor.",
-        "fr": "Longitude utilisée par le capteur météo de démonstration."
+      "label": {
+        "en": "Low price threshold ($/MWh)",
+        "fr": "Seuil de prix bas ($/MWh)",
+        "de": "Niedrige Preisschwelle ($/MWh)",
+        "es": "Umbral de precio bajo ($/MWh)"
       },
-      "placeholder": { "en": "e.g. 2.3522", "fr": "ex. 2.3522" },
-      "required": true,
-      "default": 2.3522,
-      "min": -180,
-      "max": 180
+      "description": {
+        "en": "For the \"Price below\" trigger. 0: negative price. Empty: off.",
+        "fr": "Pour le déclencheur « Prix en dessous ». 0 : prix négatif. Vide : désactivé.",
+        "de": "Für den Auslöser „Preis unter“. 0: negativer Preis. Leer: aus.",
+        "es": "Para el disparador «Precio por debajo». 0: precio negativo. Vacío: desactivado."
+      },
+      "required": false,
+      "min": -2000,
+      "max": 2000
     },
     {
-      "key": "unit",
+      "key": "low_carbon_high",
+      "type": "number",
+      "label": {
+        "en": "Low-carbon share threshold (%)",
+        "fr": "Seuil de part bas carbone (%)",
+        "de": "Schwelle CO₂-armer Anteil (%)",
+        "es": "Umbral de proporción baja en carbono (%)"
+      },
+      "description": {
+        "en": "For the \"Low-carbon share above\" trigger. Empty: off.",
+        "fr": "Pour le déclencheur « Part bas carbone au-dessus ». Vide : désactivé.",
+        "de": "Für den Auslöser „CO₂-armer Anteil über“. Leer: aus.",
+        "es": "Para el disparador «Proporción baja en carbono por encima». Vacío: desactivado."
+      },
+      "required": false,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "language",
       "type": "select",
-      "label": { "en": "Temperature unit", "fr": "Unité de température" },
-      "required": false,
-      "default": "celsius",
-      "options": [
-        { "value": "celsius", "label": { "en": "Celsius", "fr": "Celsius" } },
-        { "value": "fahrenheit", "label": { "en": "Fahrenheit", "fr": "Fahrenheit" } }
-      ]
-    },
-    {
-      "key": "poll_frequency",
-      "type": "number",
-      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "label": {
+        "en": "Language of the names",
+        "fr": "Langue des noms",
+        "de": "Sprache der Namen",
+        "es": "Idioma de los nombres"
+      },
       "description": {
-        "en": "How often sensors are polled, in seconds (one minute minimum).",
-        "fr": "Fréquence d'interrogation des capteurs, en secondes (une minute minimum)."
+        "en": "Names of the features (frozen when the device is added), the summary and the action messages.",
+        "fr": "Noms des fonctionnalités (figés à l'ajout de l'appareil), résumé et messages.",
+        "de": "Namen der Funktionen (beim Hinzufügen des Geräts festgelegt), Zusammenfassung und Meldungen.",
+        "es": "Nombres de las funciones (fijados al añadir el dispositivo), resumen y mensajes."
       },
       "required": false,
-      "default": 300,
-      "min": 60,
-      "max": 3600
+      "default": "fr",
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "English",
+            "de": "English",
+            "es": "English"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "Français",
+            "fr": "Français",
+            "de": "Français",
+            "es": "Français"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "Deutsch",
+            "fr": "Deutsch",
+            "de": "Deutsch",
+            "es": "Deutsch"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Español",
+            "fr": "Español",
+            "de": "Español",
+            "es": "Español"
+          }
+        }
+      ]
     }
   ],
   "actions": [
     {
-      "key": "test_weather",
-      "label": { "en": "Test the weather provider", "fr": "Tester le fournisseur météo" },
-      "timeout_seconds": 30
-    },
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection to the IESO",
+        "fr": "Tester la connexion à l'IESO",
+        "de": "Verbindung zur IESO testen",
+        "es": "Probar la conexión con el IESO"
+      },
+      "description": {
+        "en": "Reads the price, the demand and the generation mix now.",
+        "fr": "Lit tout de suite le prix, la demande et le mix.",
+        "de": "Liest sofort Preis, Verbrauch und Strommix.",
+        "es": "Lee ahora el precio, la demanda y el mix."
+      },
+      "timeout_seconds": 60
+    }
+  ],
+  "widgets": [
     {
-      "key": "identify",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "fields": [
+      "key": "grid",
+      "label": {
+        "en": "Ontario power grid",
+        "fr": "Réseau de l'Ontario",
+        "de": "Stromnetz Ontario",
+        "es": "Red de Ontario"
+      },
+      "description": {
+        "en": "Real-time price, low-carbon share, CO₂, demand, a 24-hour price chart and the mix as bars.",
+        "fr": "Prix temps réel, part bas carbone, CO₂, demande, courbe du prix sur 24 h et mix en barres.",
+        "de": "Echtzeitpreis, CO₂-armer Anteil, CO₂, Verbrauch, 24-h-Preiskurve und Strommix als Balken.",
+        "es": "Precio en tiempo real, bajo en carbono, CO₂, demanda, curva de precio de 24 h y mix en barras."
+      },
+      "icon": "zap",
+      "settings": [
         {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
+          "key": "show_chart",
+          "type": "boolean",
+          "label": {
+            "en": "Show the 24-hour chart",
+            "fr": "Afficher la courbe sur 24 h",
+            "de": "24-h-Kurve anzeigen",
+            "es": "Mostrar la curva de 24 h"
+          },
+          "description": {
+            "en": "The price, once the device is added.",
+            "fr": "Le prix, une fois l'appareil ajouté.",
+            "de": "Der Preis, sobald das Gerät hinzugefügt ist.",
+            "es": "El precio, una vez añadido el dispositivo."
+          },
+          "required": false,
+          "default": true
+        },
+        {
+          "key": "show_mix",
+          "type": "boolean",
+          "label": {
+            "en": "Show the fuel mix",
+            "fr": "Afficher le mix",
+            "de": "Strommix anzeigen",
+            "es": "Mostrar el mix"
+          },
+          "required": false,
+          "default": true
         }
       ]
     }
   ],
   "scene_triggers": [
     {
-      "key": "motion_detected",
-      "label": { "en": "Motion detected", "fr": "Mouvement détecté" },
-      "description": {
-        "en": "A demo motion sensor saw a person or an animal move.",
-        "fr": "Un détecteur de démonstration a vu bouger une personne ou un animal."
+      "key": "price_above",
+      "label": {
+        "en": "IESO price above the threshold",
+        "fr": "Prix IESO au-dessus du seuil",
+        "de": "IESO-Preis über der Schwelle",
+        "es": "Precio IESO por encima del umbral"
       },
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Sensor", "fr": "Détecteur" }
-        },
-        {
-          "key": "target",
-          "type": "multi_select",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" },
-          "options": [
-            { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "animal", "label": { "en": "Animal", "fr": "Animal" } }
-          ]
-        }
-      ],
+      "description": {
+        "en": "The Ontario price rises above the high price threshold of the configuration. Once per crossing.",
+        "fr": "Le prix de l'Ontario passe au-dessus du seuil de prix haut de la configuration. Une fois par passage.",
+        "de": "Der Preis in Ontario steigt über die hohe Preisschwelle der Konfiguration. Einmal pro Überschreitung.",
+        "es": "El precio de Ontario supera el umbral de precio alto de la configuración. Una vez por cruce."
+      },
       "variables": [
         {
-          "key": "target",
-          "type": "string",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" }
+          "key": "price",
+          "type": "number",
+          "label": {
+            "en": "Price ($/MWh)",
+            "fr": "Prix ($/MWh)",
+            "de": "Preis ($/MWh)",
+            "es": "Precio ($/MWh)"
+          }
+        },
+        {
+          "key": "threshold",
+          "type": "number",
+          "label": {
+            "en": "Threshold ($/MWh)",
+            "fr": "Seuil ($/MWh)",
+            "de": "Schwelle ($/MWh)",
+            "es": "Umbral ($/MWh)"
+          }
         }
       ]
-    }
-  ],
-  "scene_actions": [
+    },
     {
-      "key": "identify_device",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "description": {
-        "en": "Make a device signal itself (the demo light blinks).",
-        "fr": "Fait se signaler un appareil (la lampe de démonstration clignote)."
+      "key": "price_below",
+      "label": {
+        "en": "IESO price below the threshold",
+        "fr": "Prix IESO en dessous du seuil",
+        "de": "IESO-Preis unter der Schwelle",
+        "es": "Precio IESO por debajo del umbral"
       },
-      "timeout_seconds": 15,
-      "fields": [
+      "description": {
+        "en": "The Ontario price falls below the low price threshold of the configuration (0: negative price). Once per crossing.",
+        "fr": "Le prix de l'Ontario passe sous le seuil de prix bas de la configuration (0 : prix négatif). Une fois par passage.",
+        "de": "Der Preis in Ontario fällt unter die niedrige Preisschwelle der Konfiguration (0: negativer Preis). Einmal pro Unterschreitung.",
+        "es": "El precio de Ontario baja del umbral de precio bajo de la configuración (0: precio negativo). Una vez por cruce."
+      },
+      "variables": [
         {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ],
-      "outputs": [
+          "key": "price",
+          "type": "number",
+          "label": {
+            "en": "Price ($/MWh)",
+            "fr": "Prix ($/MWh)",
+            "de": "Preis ($/MWh)",
+            "es": "Precio ($/MWh)"
+          }
+        },
         {
-          "key": "signalled",
-          "type": "boolean",
-          "label": { "en": "Device signalled", "fr": "Appareil signalé" }
+          "key": "threshold",
+          "type": "number",
+          "label": {
+            "en": "Threshold ($/MWh)",
+            "fr": "Seuil ($/MWh)",
+            "de": "Schwelle ($/MWh)",
+            "es": "Umbral ($/MWh)"
+          }
         }
       ]
-    }
-  ],
-  "widgets": [
+    },
     {
-      "key": "demo_status",
-      "label": { "en": "Demo status", "fr": "État de la démo" },
-      "description": {
-        "en": "Live temperature and plug power, plug connection and observed location.",
-        "fr": "Température et puissance en direct, connexion de la prise, position observée."
+      "key": "low_carbon_above",
+      "label": {
+        "en": "Ontario grid: low-carbon share high",
+        "fr": "Réseau de l'Ontario : part bas carbone haute",
+        "de": "Netz Ontario: hoher CO₂-armer Anteil",
+        "es": "Red de Ontario: proporción baja en carbono alta"
       },
-      "icon": "activity",
-      "action_timeout_seconds": 15
+      "description": {
+        "en": "The low-carbon share of the Ontario generation rises above the threshold of the configuration. Once per crossing.",
+        "fr": "La part bas carbone de la production de l'Ontario passe au-dessus du seuil de la configuration. Une fois par passage.",
+        "de": "Der CO₂-arme Anteil der Erzeugung in Ontario steigt über die Schwelle der Konfiguration. Einmal pro Überschreitung.",
+        "es": "La proporción baja en carbono de la generación de Ontario supera el umbral de la configuración. Una vez por cruce."
+      },
+      "variables": [
+        {
+          "key": "low_carbon_share",
+          "type": "number",
+          "label": {
+            "en": "Low-carbon share (%)",
+            "fr": "Part bas carbone (%)",
+            "de": "CO₂-armer Anteil (%)",
+            "es": "Proporción baja en carbono (%)"
+          }
+        },
+        {
+          "key": "renewable_share",
+          "type": "number",
+          "label": {
+            "en": "Renewable share (%)",
+            "fr": "Part renouvelable (%)",
+            "de": "Erneuerbarer Anteil (%)",
+            "es": "Proporción renovable (%)"
+          }
+        },
+        {
+          "key": "carbon_intensity",
+          "type": "number",
+          "label": {
+            "en": "CO₂ intensity (g/kWh)",
+            "fr": "Taux de CO₂ (g/kWh)",
+            "de": "CO₂-Intensität (g/kWh)",
+            "es": "Intensidad de CO₂ (g/kWh)"
+          }
+        },
+        {
+          "key": "threshold",
+          "type": "number",
+          "label": {
+            "en": "Threshold (%)",
+            "fr": "Seuil (%)",
+            "de": "Schwelle (%)",
+            "es": "Umbral (%)"
+          }
+        }
+      ]
     }
   ]
 }
