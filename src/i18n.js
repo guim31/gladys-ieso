@@ -206,7 +206,8 @@ export const MESSAGES = {
             es: `, ${formatNumber(lowCarbonPercent, language)} % bajo en carbono`,
           }[language]
         : '';
-      return `${head}: ${formatNumber(price, language, 2)} $/MWh (${time})${demand}${lowCarbon}.`;
+      const colon = language === 'fr' ? ' :' : ':';
+      return `${head}${colon} ${formatNumber(price, language, 2)} $/MWh (${time})${demand}${lowCarbon}.`;
     }),
 };
 
