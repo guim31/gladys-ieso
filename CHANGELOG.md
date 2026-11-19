@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-19
+
 ### Added
 
 - An **Ontario power grid** device, from the public reports of the IESO: the
@@ -23,3 +25,6 @@ the notes of the version's GitHub Release.
   chart and the mix as bars, each optional block with a setting to hide it.
 - A "Test the connection to the IESO" action.
 - Documentation in English, French, German and Spanish.
+
+[Unreleased]: https://github.com/guim31/gladys-ieso/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/guim31/gladys-ieso/releases/tag/v1.0.0
