@@ -32,14 +32,16 @@ pushing.
 
 ```
 index.js                          SDK wiring only: handlers registered before connect()
-src/devices/index.js              registry of the device blueprints + dispatch helpers
-src/devices/<type>.js             one device type per file (buildDevice, onPoll, onSetValue...)
-src/scenes.js                     scene action handlers (manifest `scene_actions`)
-src/widgets.js                    dashboard widget handlers (manifest `widgets`)
+src/app.js                        the integration: minute timer, reads, triggers, widget, action
+src/ieso.js                       IESO report URLs and XML parsers (price, demand, generators)
+src/devices.js                    the "Ontario power grid" device and its states
+src/triggers.js                   threshold crossings with hysteresis (scene triggers)
+src/widgets.js                    dashboard widget content
+src/i18n.js                       every text, in en/fr/de/es
 src/config.js                     DEFAULT_CONFIG (mirrors the manifest defaults) + normalization
-src/weather.js                    example driver (Open-Meteo)
-gladys-assistant-integration.json manifest: name, config_schema, actions, image...
-docs/en.md, docs/fr.md            user documentation, re-hosted by Gladys (mandatory)
+src/http.js, issues.js, store.js  HTTP with timeout, logged-once failures, /data persistence
+gladys-assistant-integration.json manifest: name, config_schema, actions, widget, triggers
+docs/{en,fr,de,es}.md             user documentation, re-hosted by Gladys
 test/                             node --test, against the SDK's fake Gladys (integration-sdk/testing)
 .github/scripts/release.mjs       release helpers (manifest bump, changelog), tested in test/
 ```
@@ -259,3 +261,20 @@ long, et sur un « Sie »/« Ihr… » de politesse en allemand. Le store exige 
 - Docs `en`, `fr`, `de`, `es` avec les mêmes sections.
 - Chauffe, ouverture, sécurité : ne rien rendre pilotable « comme un thermostat » ou par un assistant
   vocal quand une erreur serait dangereuse (leçon d'OctoPrint).
+
+## IESO (propre à cette intégration)
+
+- Rapports publics `https://reports-public.ieso.ca/public/<Rapport>/PUB_<Rapport>.xml` : lire le
+  **fichier courant**, jamais l'index du répertoire (plus d'un Mo). Les fichiers datés
+  (`_YYYYMMDDHH_vN`, `_YYYYMMDD`) restent environ un mois.
+- **Heure normale de l'Est toute l'année** (UTC−5, pas d'heure d'été : le 1/11/2026 a 24 heures),
+  heures « hour ending » (heure 1 = 00:00–01:00). Vérifié sur `GenOutputCapability_20261101`.
+- Prix : `RealtimeOntarioZonalPrice` (`LmpCap` de chaque `ZonalPrice`, intervalle de 5 min). Depuis
+  le renouvellement du marché (1/05/2025), l'OZP remplace le HOEP (`DispUnconsHOEP` est vide). Les
+  intervalles sont publiés **juste avant leur début** : tolérance de 10 min en avance.
+- Demande : `RealtimeTotals`, `MarketQuantity` « ONTARIO DEMAND » (le CSV ne l'a pas : lire le XML).
+- Mix : `GenOutputCapability`, sortie horaire de chaque centrale raccordée au transport, avec
+  `FuelType` (NUCLEAR, HYDRO, GAS, WIND, SOLAR, BIOFUEL, OTHER). 0,1 à 1 Mo, publié vers :15. Juste
+  après minuit, le fichier courant est le nouveau jour sans heure : lire le fichier daté de la
+  veille. `GenOutputbyFuelHourly` (agrégé) n'existe qu'en fichier annuel de 7 Mo : à éviter.
+- Gladys n'a ni unité dollar canadien ni mégawatt : prix en `dollar`, demande en kW.
