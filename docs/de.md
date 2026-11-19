@@ -112,8 +112,8 @@ mit dem, was fehlgeschlagen ist (in Rot).
   Viertelstunde nach der Stunde veröffentlicht). Nur die aktuellen Dateien
   werden gelesen, nie der Verzeichnisindex.
 - Takt: Preis und Verbrauch alle fünf Minuten, die Kraftwerke einmal pro
-  neuer Stunde (alle zehn Minuten erneut versucht, bis sie da ist). Nichts
-  wird gelesen, solange das Gerät nicht hinzugefügt, keine Schwelle gesetzt
+  neuer Stunde (alle zehn Minuten erneut versucht, bis sie da ist). Außer einer Abfrage beim Start und der Testaktion
+  wird nichts gelesen, solange das Gerät nicht hinzugefügt, keine Schwelle gesetzt
   und das Widget auf keinem Dashboard ist.
 - Der Strommix umfasst die **ans Übertragungsnetz angeschlossenen**
   Kraftwerke: Importe und kleine Anlagen an den lokalen Netzen (die meisten

@@ -114,7 +114,7 @@ que falló (en rojo).
   quince minutos después de la hora). Solo se leen los archivos actuales,
   nunca el índice del directorio.
 - Ritmo: el precio y la demanda cada cinco minutos, las centrales una vez por
-  hora nueva (nuevo intento cada diez minutos hasta que aparece). No se lee
+  hora nueva (nuevo intento cada diez minutos hasta que aparece). Salvo una lectura al arrancar y la acción de prueba, no se lee
   nada mientras el dispositivo no esté añadido, no haya ningún umbral y ningún
   panel muestre el widget.
 - El mix cubre las centrales **conectadas a la red de transporte**: las

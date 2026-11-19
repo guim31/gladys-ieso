@@ -101,6 +101,12 @@ test('an hour reported by few units yet is skipped for the one before', () => {
   );
   assert.equal(parseGenerators(partial).hour, 16);
   assert.equal(parseGenerators(EMPTY_GENERATORS_XML), null);
+  // Just after midnight, hour 1 reported by a single unit: no hour yet.
+  const firstUnit = EMPTY_GENERATORS_XML.replace(
+    '<Outputs>\n</Outputs>',
+    '<Outputs>\n<Output>\n<Hour>1</Hour>\n<EnergyMW>900</EnergyMW>\n</Output>\n</Outputs>',
+  );
+  assert.equal(parseGenerators(firstUnit), null);
 });
 
 test('just after midnight, the generators of the day before are read', async () => {

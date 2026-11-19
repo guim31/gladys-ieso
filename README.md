@@ -47,7 +47,7 @@ Three public XML reports, the current file only (never the directory index, over
 
 The market runs on Eastern Standard Time all year, hour ending: the integration converts it.
 Just after midnight, while the generator file of the new day has no hour yet, the file of the day
-before is read. Nothing is read while the device is not added, no trigger threshold is set and no
+before is read. Apart from a read at start-up and the test action, nothing is read while the device is not added, no trigger threshold is set and no
 dashboard shows the widget.
 
 ## Limitations

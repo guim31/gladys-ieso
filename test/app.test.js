@@ -237,6 +237,19 @@ test('the low-carbon trigger, with its figures', async (t) => {
   assert.equal(world.fake.sceneEvents.length, 1);
 });
 
+test('a new low-carbon threshold is checked at once against the mix already read', async (t) => {
+  const world = await createWorld({ config: { language: 'fr' } });
+  t.after(() => world.app.stop());
+  const mixes = world.ieso.count('generators');
+  world.clock.advance(TICK_MS);
+  await world.fake.configUpdated({ language: 'fr', low_carbon_high: 70 });
+  assert.equal(world.ieso.count('generators'), mixes, 'no new read within ten minutes');
+  assert.deepEqual(
+    world.fake.sceneEvents.map((e) => e.key),
+    ['low_carbon_above'],
+  );
+});
+
 test('the widget: valid content, hideable blocks, the chart once the device exists', async (t) => {
   const world = await createWorld({ config: { language: 'fr', price_high: 30 } });
   t.after(() => world.app.stop());

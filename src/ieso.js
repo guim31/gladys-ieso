@@ -157,7 +157,8 @@ export function parseGenerators(xml) {
   }
   /** hour → { reporting: generator count, mw: fuel key → MW } */
   const hours = new Map();
-  for (const generator of blocks(xml, 'Generator')) {
+  const generators = blocks(xml, 'Generator');
+  for (const generator of generators) {
     const fuel = FUELS[tag(generator, 'FuelType')] ?? UNKNOWN;
     const outputs = blocks(generator, 'Outputs')[0] ?? '';
     for (const output of blocks(outputs, 'Output')) {
@@ -174,12 +175,9 @@ export function parseGenerators(xml) {
     }
   }
   const sorted = [...hours.keys()].sort((a, b) => b - a);
-  // The latest hour, unless far fewer units report it than the hour before
-  // (a file caught while it is being completed).
-  const hour = sorted.find((h, i) => {
-    const before = hours.get(sorted[i + 1]);
-    return !before || hours.get(h).reporting >= 0.9 * before.reporting;
-  });
+  // The latest hour that nearly every unit of the file reports: a file caught
+  // while it is being completed (even at hour 1) gives the hour before.
+  const hour = sorted.find((h) => hours.get(h).reporting >= 0.9 * generators.length);
   if (hour === undefined) {
     return null;
   }

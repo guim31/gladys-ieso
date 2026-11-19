@@ -114,7 +114,7 @@ ou avec ce qui a échoué (en rouge).
   jamais l'index du répertoire.
 - Rythme : le prix et la demande toutes les cinq minutes, les centrales une
   fois par nouvelle heure (nouvel essai toutes les dix minutes jusqu'à sa
-  parution). Rien n'est lu tant que l'appareil n'est pas ajouté, qu'aucun
+  parution). Hors une lecture au démarrage et l'action de test, rien n'est lu tant que l'appareil n'est pas ajouté, qu'aucun
   seuil n'est réglé et qu'aucun tableau de bord n'affiche le widget.
 - Le mix couvre les centrales **raccordées au réseau de transport** : les
   importations et les petites centrales raccordées aux réseaux locaux (la

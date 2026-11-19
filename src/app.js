@@ -43,7 +43,7 @@ export const HEARTBEAT_MS = 6 * 60 * 60 * 1000;
 /** The generator report: at most one read every ten minutes. */
 export const MIX_RETRY_MS = 10 * 60 * 1000;
 /** A new hour of generation is expected this long after the end of the last one. */
-export const MIX_NEXT_MS = 70 * 60 * 1000;
+export const MIX_NEXT_MS = 75 * 60 * 1000;
 /** A widget shown in the last hour keeps the IESO read without any device. */
 const WIDGET_INTEREST_MS = 60 * 60 * 1000;
 
@@ -294,6 +294,11 @@ export function registerHandlers(
       if ((force && now() - mixAttemptAt >= MIX_RETRY_MS) || (wantsMix() && mixDue())) {
         await refreshMix();
         read = true;
+      }
+      // A new low-carbon threshold is checked against the mix already read,
+      // without waiting for the next hour.
+      if (config.low_carbon_high !== null && fresh(mix, MIX_MAX_AGE_MS, now())) {
+        await fireLowCarbonTrigger(mix);
       }
       await publishStates();
       await reportStatus();

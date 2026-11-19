@@ -110,7 +110,7 @@ or with what failed (in red).
   quarter of an hour after the hour). Only the current files are read, never
   the directory index.
 - Pace: the price and the demand every five minutes, the generators once per
-  new hour (retried every ten minutes until it is there). Nothing is read
+  new hour (retried every ten minutes until it is there). Apart from a read at start-up and the test action, nothing is read
   while the device is not added, no threshold is set and no dashboard shows
   the widget.
 - The mix covers the **transmission-connected** generators: imports and the
